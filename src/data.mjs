@@ -37,3 +37,32 @@ export const testimonials = [
   { quote:'On apprend à conduire de manière responsable tout en prenant confiance en soi. Je recommande sans hésiter !', name:'Simon F.', location:'Prilly' },
   { quote:'J’ai beaucoup apprécié les exercices pratiques et les conseils personnalisés. Je me sentais prête pour chaque étape.', name:'Nina B.', location:'Belmont-sur-Lausanne' },
 ];
+
+// Avis Google transmis par le client le 14 septembre 2026.
+export const googleReviews = [
+  { name:'Sergen Mutlu', rating:5, quote:'J’ai eu le plaisir de suivre des cours pour le permis auto chez L-go après recommandation. Je les remercie pour la qualité de la formation, très pédagogique et la confiance qu’ils m’ont apporté. Je recommande sans hésiter.' },
+  { name:'Henri Franck', rating:5, quote:'Très bonne auto-école ! Les moniteurs sont patients, professionnels et expliquent vraiment bien. L’ambiance est agréable, on se sent en confiance dès le début. Grâce à eux, j’ai progressé rapidement. Je recommande sans hésiter 👍' },
+  { name:'Maya Guyaz', rating:5, quote:'Super auto-école, je recommande ! J’ai obtenu mon permis du premier coup. Un grand merci à Lumrim pour sa patience, ses explications claires et sa manière de mettre en confiance.' },
+  { name:'Melissa dias', rating:5, quote:'Moniteur excellent, très à l’écoute et avec de très bonnes explications. Il prend vraiment le temps de bien enseigner et met en confiance. Je recommande vivement à tous les élèves d’y aller !' },
+  { name:'Seniz Ozcan', rating:5, quote:'Je remercie Gencer. Il est super patient, explique très bien et met tout de suite à l’aise. J’ai pris énormément de plaisir à conduire avec lui. Une super expérience, merci beaucoup 😊' },
+];
+
+export const locationPhotos = [
+  { image:'location-exterior.webp', alt:'Façade extérieure du local L-GO' },
+  { image:'location-entrance.webp', alt:'Entrée du local L-GO' },
+  { image:'location-classroom-wide.webp', alt:'Salle de cours L-GO avec tables et chaises' },
+  { image:'location-classroom-window.webp', alt:'Salle de cours lumineuse de L-GO' },
+];
+
+export const successStories = [
+  { image:'success-01.jpg', alt:'Élève L-GO présentant son permis devant un véhicule de l’auto-école' },
+  { image:'success-02.jpg', alt:'Jeunes élèves L-GO célébrant une réussite devant leur voiture' },
+  { image:'success-03.jpg', alt:'Élève L-GO présentant son permis devant un véhicule noir' },
+  { image:'success-04.jpg', alt:'Élève L-GO présentant son permis devant un véhicule de l’auto-école' },
+  { image:'success-05.jpg', alt:'Élève L-GO présentant son permis devant un véhicule bleu' },
+  { image:'success-06.jpg', alt:'Élève L-GO célébrant son permis devant un véhicule' },
+  { image:'success-07.jpg', alt:'Élève L-GO célébrant sa réussite devant un véhicule bleu' },
+  { image:'success-08.jpg', alt:'Élève L-GO présentant son permis devant un véhicule bleu' },
+  { image:'success-09.jpg', alt:'Élève L-GO présentant son permis près d’un véhicule de l’auto-école' },
+  { image:'success-10.jpg', alt:'Élève L-GO célébrant son permis devant la gare de Renens' },
+];

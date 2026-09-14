@@ -5,6 +5,13 @@ const base = body.dataset.base || '/';
 const page = body.dataset.page || '';
 const prefersReducedMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
+if (prefersReducedMotion) {
+  document.querySelectorAll('video[autoplay]').forEach(video => {
+    video.removeAttribute('autoplay');
+    video.pause();
+  });
+}
+
 const header = document.querySelector('[data-header]');
 if (header) {
   const setHeader = () => header.classList.toggle('scrolled', scrollY > 24);
@@ -79,10 +86,33 @@ const chatOpen = document.querySelector('[data-chat-open]');
 const chatClose = document.querySelector('[data-chat-close]');
 const chatMessages = document.querySelector('[data-chat-messages]');
 const chatForm = document.querySelector('[data-chat-form]');
+const chatNudge = document.querySelector('[data-chat-nudge]');
 let chatStarted = false;
+let chatNudgeTimer;
+
+function hideChatNudge() {
+  if (!chatNudge) return;
+  chatNudge.hidden = true;
+  clearTimeout(chatNudgeTimer);
+}
+
+if (chatNudge && matchMedia('(max-width: 820px)').matches) {
+  let alreadySeen = false;
+  try { alreadySeen = sessionStorage.getItem('lgo-chat-nudge-seen') === 'true'; } catch {}
+  if (!alreadySeen) {
+    chatNudgeTimer = setTimeout(() => {
+      if (chatPanel?.getAttribute('aria-hidden') !== 'false') {
+        chatNudge.hidden = false;
+        try { sessionStorage.setItem('lgo-chat-nudge-seen','true'); } catch {}
+        chatNudgeTimer = setTimeout(hideChatNudge, 9000);
+      }
+    }, 30000);
+  }
+}
 
 function openChat() {
   if (!chatPanel || !chatOpen) return;
+  hideChatNudge();
   chatPanel.setAttribute('aria-hidden','false');
   chatOpen.setAttribute('aria-expanded','true');
   chatOpen.setAttribute('aria-label','Fermer l’assistant L-GO');
@@ -143,6 +173,7 @@ document.querySelectorAll('[data-chat-action]').forEach(button => button.addEven
   botReply(...chatResponses[key]);
 }));
 chatOpen?.addEventListener('click',()=>chatPanel?.getAttribute('aria-hidden')==='false'?closeChat():openChat());
+chatNudge?.addEventListener('click',openChat);
 chatClose?.addEventListener('click',closeChat);
 chatForm?.addEventListener('submit',event=>{
   event.preventDefault();

@@ -1,4 +1,8 @@
-# L-GO — prompt vidéo hero
+# L-GO — vidéo hero intégrée
+
+Une vidéo réelle fournie par le client est désormais intégrée sous `public/assets/video/l-go-hero.mp4`. Le poster généré reste utilisé comme image de repli, et le lecteur respecte `prefers-reduced-motion`.
+
+Le brief ci-dessous est conservé uniquement comme référence si L-GO souhaite produire plus tard une variante spécifiquement tournée en Suisse ou un format mobile vertical.
 
 ## Format
 
@@ -15,6 +19,6 @@ Publicité automobile premium et réaliste pour une école de conduite suisse, s
 
 Pas de logo automobile, pas de plaque lisible, pas de marque L-GO ajoutée, pas de texte, pas de filigrane, pas de visage en gros plan, pas de faux moniteur, pas de route impossible, pas de conduite à gauche, pas de voiture déformée, pas de roues ovales, pas de mains supplémentaires, pas de volant asymétrique, pas de panneaux illisibles au premier plan, pas d’esthétique néon/cyberpunk, pas de saturation excessive, pas de caméra saccadée, pas de vitesse agressive, pas d’accident.
 
-## Intégration prévue
+## Intégration actuelle
 
-Déposer les fichiers validés sous `public/assets/video/lgo-hero.webm` et `public/assets/video/lgo-hero.mp4`. Le poster actuel reste affiché tant qu’aucune vidéo validée n’est fournie. Respecter `prefers-reduced-motion` en conservant le poster fixe.
+Le fichier validé est disponible sous `public/assets/video/l-go-hero.mp4`. Le poster actuel reste affiché pendant le chargement et lorsque les préférences système demandent moins de mouvement.
