@@ -1,0 +1,51 @@
+# L-GO — inventaire factuel vérifié
+
+Source consultée : site public `https://l-go.ch/`, page WordPress et module de réservation, le 14 septembre 2026.
+
+## Marque et contact
+
+- Nom : L-GO
+- Positionnement publié : « Réussis ton permis »
+- Phrase publiée : « Former la nouvelle génération de conducteurs »
+- Téléphone principal : 079 913 63 99
+- Instagram : `https://www.instagram.com/l_go_ch/`
+- Logo officiel : `public/assets/images/l-go-logo.png`
+- Aucune adresse et aucune adresse e-mail vérifiables dans la page source.
+- Le bouton WhatsApp actuel pointe vers `#` et n’est donc pas reproduit comme contact fonctionnel.
+
+## Cours publiés
+
+- Premiers secours : gestes essentiels, y compris la réanimation.
+- Sensibilisation : alcool, fatigue et distractions ; les packs indiquent 2 × 4 heures.
+- Théorie : panneaux, signaux lumineux, marquages au sol, priorités et règles propres aux situations.
+- Conduite : position sur la route, commandes et maniabilité en situations variées.
+- Moto : équilibre, maniabilité, changement de vitesse et contrôle du véhicule.
+- Conseils / préparation pour réussir le permis : confiance et sérénité face à l’examen.
+
+## Tarifs publiés
+
+- Simple — CHF 300 : assurance, 1 leçon automatique, sensibilisation 2 × 4 h ; économie affichée CHF 74.
+- Maîtrise — CHF 450 : assurance, 3 leçons automatiques, sensibilisation 2 × 4 h ; économie affichée CHF 104.
+- Maîtrise — CHF 720 : assurance, 6 leçons automatiques, sensibilisation 2 × 4 h ; économie affichée CHF 119.
+- Premium — CHF 1’000 : assurance, 10 leçons automatiques, sensibilisation 2 × 4 h ; économie affichée CHF 219.
+- Module actuel : sensibilisation CHF 150 ; moto blocs 1–3 CHF 570 ; théorie CHF 60 ; leçon automatique CHF 95.
+
+## Moniteurs
+
+- Lumrim — français / albanais — 079 913 63 99.
+- Gencer — français / anglais — 079 675 26 44.
+- Mustafa — français / turc / anglais — 076 480 22 22.
+- Osman — français / turc — 078 967 19 10.
+- Le site source associe la même image à Lumrim et Osman. Un portrait distinct d’Osman reste à fournir.
+- Un compteur dit « 5 moniteurs », mais seuls quatre profils sont publiés ; le nouveau site n’affiche donc aucun total.
+
+## Témoignages et lieux
+
+Huit témoignages sont repris dans `src/data.mjs`. Les lieux cités sont Lausanne, Renens, Moudon, Prilly, Echallens et Belmont-sur-Lausanne. Ils sont présentés comme lieux associés aux témoignages, et non comme zones desservies.
+
+## Éléments volontairement exclus
+
+- Statistiques de réussite/heures non accompagnées d’une source indépendante.
+- Note Google et aggregateRating.
+- Adresse, e-mail, partenariats, certifications et zones de service non publiés.
+- Tout contenu Elementra, blockchain, smart contracts, crypto, digital assets et crédit ThemeREX.

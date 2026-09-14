@@ -1,0 +1,173 @@
+import { instructors, packs, services, testimonials, unitPrices } from './data.mjs';
+
+const esc = (value='') => value.replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;');
+
+export function createRenderer(base='/') {
+  const url = (value='') => `${base}${value.replace(/^\//,'')}`;
+  const image = (value) => url(`assets/images/${value.replace(/^(hero-lausanne|driving-lesson|motorcycle-lesson|first-aid-course|theory-course|sensitization-course)\.png$/, '$1.jpg')}`);
+
+  const nav = `
+    <a href="${url('cours-de-conduite/')}" data-nav="cours">Les cours</a>
+    <a href="${url('packs-tarifs/')}" data-nav="packs">Packs & tarifs</a>
+    <a href="${url('moniteurs/')}" data-nav="moniteurs">La team</a>
+    <a href="${url('avis/')}" data-nav="avis">Avis</a>
+    <a href="${url('a-propos/')}" data-nav="a-propos">À propos</a>`;
+
+  const header = `
+    <a class="skip-link" href="#contenu">Aller au contenu</a>
+    <header class="site-header" data-header>
+      <a href="${base}" aria-label="L-GO — Accueil" class="brand-link"><img src="${image('l-go-logo.png')}" alt="L-GO" width="1600" height="824"></a>
+      <nav aria-label="Navigation principale" class="desktop-nav">${nav}</nav>
+      <div class="header-actions">
+        <a href="${url('reservation/')}" class="header-cta">Réserver <span aria-hidden="true">↗</span></a>
+        <button class="menu-toggle" type="button" aria-label="Ouvrir le menu" aria-expanded="false" aria-controls="mobile-menu" data-menu-toggle><span></span><span></span></button>
+      </div>
+      <div class="mobile-menu" id="mobile-menu" aria-hidden="true" data-mobile-menu>
+        <nav aria-label="Navigation mobile">${nav}<a href="${url('contact/')}">Contact</a></nav>
+        <div class="mobile-menu-meta"><span>Prêt à avancer ?</span><a href="tel:+41799136399">079 913 63 99</a></div>
+      </div>
+    </header>`;
+
+  const chat = `
+    <div class="chat-shell" data-chat>
+      <section class="chat-panel" id="assistant-lgo" aria-label="Assistant L-GO" aria-hidden="true" role="dialog" aria-modal="false" aria-describedby="chat-disclaimer">
+        <div class="chat-head"><div><small>Assistant de démonstration</small><strong>Assistant L-GO</strong></div><button type="button" aria-label="Fermer l’assistant" data-chat-close>×</button></div>
+        <div class="chat-messages" aria-live="polite" data-chat-messages></div>
+        <div class="chat-quick" data-chat-quick>
+          <button type="button" data-chat-action="reservation">Réserver un cours</button><button type="button" data-chat-action="packs">Voir les packs</button><button type="button" data-chat-action="conduite">Cours de conduite</button><button type="button" data-chat-action="moto">Cours moto</button><button type="button" data-chat-action="secours">Premiers secours</button><button type="button" data-chat-action="sensibilisation">Sensibilisation</button><button type="button" data-chat-action="contact">Parler à L-GO</button>
+        </div>
+        <form class="chat-form" data-chat-form><label class="sr-only" for="chat-input">Ta question</label><input id="chat-input" name="question" placeholder="Écris ta question…" autocomplete="off"><button type="submit" aria-label="Envoyer">→</button></form>
+        <p id="chat-disclaimer" class="chat-disclaimer">Assistant de démonstration · réponses simulées</p>
+      </section>
+      <button class="chat-trigger" type="button" aria-label="Ouvrir l’assistant L-GO" aria-controls="assistant-lgo" aria-expanded="false" data-chat-open><span class="chat-dot"></span><span class="chat-label">Assistant L-GO</span><span aria-hidden="true">✦</span></button>
+    </div>`;
+
+  const footer = `
+    <footer class="site-footer">
+      <div class="footer-top">
+        <a href="${base}" class="footer-brand"><img src="${image('l-go-logo.png')}" alt="L-GO" width="1600" height="824"></a>
+        <p>Ton permis commence par le prochain bon choix.</p>
+        <a class="footer-big-link" href="${url('reservation/')}">Réserver <span>↗</span></a>
+      </div>
+      <div class="footer-grid">
+        <div><small>Cours</small>${services.map(s=>`<a href="${url(`${s.slug}/`)}">${s.short}</a>`).join('')}</div>
+        <div><small>Découvrir</small><a href="${url('packs-tarifs/')}">Packs & tarifs</a><a href="${url('moniteurs/')}">Les moniteurs</a><a href="${url('avis/')}">Avis élèves</a><a href="${url('a-propos/')}">À propos</a></div>
+        <div><small>Contact</small><a href="tel:+41799136399">079 913 63 99</a><a href="https://www.instagram.com/l_go_ch/" target="_blank" rel="noopener">Instagram ↗</a><a href="${url('contact/')}">Formulaire de contact</a></div>
+      </div>
+      <div class="footer-legal"><span>© ${new Date().getFullYear()} L-GO</span><span>Site de démonstration · Mentions légales à fournir</span></div>
+    </footer>`;
+
+  const mobileBar = `<div class="mobile-action"><a href="${url('reservation/')}">Réserver un cours <span>→</span></a></div>`;
+  const disclosure = `<p class="demo-note">Démonstration front-end · aucune demande réelle n’est transmise.</p>`;
+
+  const serviceCard = (s, i) => `<article class="service-card reveal">
+    <a class="service-visual" href="${url(`${s.slug}/`)}"><img src="${image(s.image)}" alt="${esc(s.alt)}" width="1536" height="1024" loading="lazy"><span>0${i+1}</span></a>
+    <div class="service-card-body"><p>${s.eyebrow}</p><h3><a href="${url(`${s.slug}/`)}">${s.title}</a></h3><p>${s.summary}</p><div><a href="${url(`${s.slug}/`)}">Découvrir ↗</a><a href="${url(`reservation/?service=${s.slug}`)}">Réserver →</a></div></div>
+  </article>`;
+
+  const instructorCard = (person, i) => `<article class="instructor-card reveal">
+    <div class="instructor-image"><img src="${image(person.image)}" alt="Portrait de ${person.name}, moniteur L-GO" width="768" height="768" loading="lazy"><span>0${i+1}</span></div>
+    <div><p class="instructor-languages">${person.languages}</p><h3>${person.name}</h3><p>${person.bio}</p><a href="tel:+41${person.phone.replace(/\D/g,'').slice(1)}">${person.phone} ↗</a></div>
+  </article>`;
+
+  const packCard = (pack, i) => `<article class="pack-card reveal ${i===3?'pack-featured':''}">
+    <div class="pack-kicker"><span>0${i+1}</span><small>${i===3?'Formule complète':'Pack L-GO'}</small></div><h3>${pack.name}</h3><p class="pack-price">${pack.price}</p><ul>${pack.items.map(item=>`<li><span>✓</span>${item}</li>`).join('')}</ul><p class="pack-save">${pack.save}</p><a class="button ${i===3?'button-primary':'button-dark'}" href="${url(`reservation/?service=cours-de-conduite&pack=${i}`)}">Choisir ce pack <span>→</span></a>
+  </article>`;
+
+  const quoteCard = (item, i) => `<figure class="quote-card reveal"><span class="quote-mark">“</span><blockquote>${item.quote}</blockquote><figcaption><strong>${item.name}</strong><span>${item.location}</span></figcaption><small>0${i+1}</small></figure>`;
+
+  const quickBooking = `
+    <section class="quick-booking section-pad" aria-labelledby="quick-title">
+      <div class="section-label"><span>02</span><p>Commencer maintenant</p></div>
+      <div class="quick-intro"><p class="eyebrow dark"><span></span> Réservation</p><h2 id="quick-title">Ton prochain cours,<br><em>en quelques clics.</em></h2></div>
+      <form class="quick-form" data-quick-booking>
+        <label><span>01 · Service</span><select name="service" required><option value="">Choisis ton cours</option>${services.map(s=>`<option value="${s.slug}">${s.title}</option>`).join('')}</select></label>
+        <label><span>02 · Date souhaitée</span><input name="date" type="date" required></label>
+        <label><span>03 · Moment</span><select name="time" required><option value="">Choisis un moment</option><option>Matin</option><option>Après-midi</option><option>Fin de journée</option></select></label>
+        <button class="button button-primary" type="submit">Voir les disponibilités <span>→</span></button>
+      </form>
+      ${disclosure}
+    </section>`;
+
+  const homepage = `
+    <section class="hero home-hero" aria-labelledby="hero-title">
+      <!-- Remplacer le poster par les sources WebM/MP4 validées décrites dans assets/video/VIDEO_PROMPT.md. -->
+      <img class="hero-media" src="${image('hero-lausanne.png')}" alt="Voiture moderne sur une route urbaine au bord du Léman" width="1536" height="1024" fetchpriority="high">
+      <div class="hero-shade"></div><div class="hero-grid" aria-hidden="true"></div>
+      <div class="hero-content"><p class="eyebrow"><span></span> Auto-école · Prêt à avancer ?</p><h1 id="hero-title">Ton permis.<br><em>Ta liberté.</em></h1><p class="hero-copy">Un accompagnement clair, humain et pensé pour te faire progresser avec confiance.</p><div class="hero-actions"><a class="button button-primary" href="${url('reservation/')}">Réserver un cours <span>→</span></a><a class="button button-ghost" href="#cours">Découvrir les cours</a></div></div>
+      <aside class="hero-note" aria-label="Promesse L-GO"><span class="note-index">01</span><p>Avance à ton rythme.<br>Conduis avec confiance.</p></aside><div class="scroll-cue" aria-hidden="true"><span></span> Découvrir L-GO</div>
+    </section>
+    ${quickBooking}
+    <section class="trust-strip" aria-label="Les points forts L-GO"><span>Accompagnement personnalisé</span><span>Moniteurs pédagogues</span><span>Plusieurs types de formations</span><span>Parcours simple vers le permis</span></section>
+    <section class="services-section section-pad" id="cours" aria-labelledby="services-title"><div class="section-label"><span>03</span><p>Choisir ta formation</p></div><div class="section-heading"><p class="eyebrow dark"><span></span> Les cours</p><h2 id="services-title">Tout pour<br><em>prendre la route.</em></h2><p>Des cours structurés autour des compétences que tu veux acquérir.</p></div><div class="services-grid">${services.map(serviceCard).join('')}</div></section>
+    <section class="journey-section section-pad dark-section" aria-labelledby="journey-title"><div class="section-label light"><span>04</span><p>Le parcours L-GO</p></div><div class="journey-head"><p class="eyebrow"><span></span> Ta progression</p><h2 id="journey-title">Une étape.<br><em>Puis la suivante.</em></h2><p>Ce parcours présente les formations L-GO. Il ne remplace pas la procédure officielle du permis.</p></div><ol class="journey-list"><li><span>01</span><div><h3>Comprendre</h3><p>Théorie, signalisation et lecture des situations.</p></div></li><li><span>02</span><div><h3>Se préparer</h3><p>Premiers secours et sensibilisation aux risques.</p></div></li><li><span>03</span><div><h3>Pratiquer</h3><p>Conduite ou moto, avec un accompagnement adapté.</p></div></li><li><span>04</span><div><h3>Prendre confiance</h3><p>Conseils et préparation pour aborder le permis sereinement.</p></div></li></ol></section>
+    <section class="team-section section-pad" aria-labelledby="team-title"><div class="section-label"><span>05</span><p>Choisis ton prof</p></div><div class="section-heading"><p class="eyebrow dark"><span></span> La team</p><h2 id="team-title">Des personnalités.<br><em>Un même cap.</em></h2><a class="text-link" href="${url('moniteurs/')}">Rencontrer tous les moniteurs →</a></div><div class="instructor-grid">${instructors.map(instructorCard).join('')}</div></section>
+    <section class="packs-section section-pad" aria-labelledby="packs-title"><div class="section-label"><span>06</span><p>Packs publiés</p></div><div class="section-heading"><p class="eyebrow dark"><span></span> Packs & tarifs</p><h2 id="packs-title">Choisis ta<br><em>formule.</em></h2><p>Tarifs et inclusions repris du site L-GO actuel.</p></div><div class="packs-grid">${packs.map(packCard).join('')}</div><a class="text-link centered" href="${url('packs-tarifs/')}">Comparer tous les tarifs →</a></section>
+    <section class="booking-teaser dark-section"><div><p class="eyebrow"><span></span> Une réservation fluide</p><h2>Ton cours.<br><em>Ton moment.</em></h2><p>Choisis la formation, le moniteur, la date et l’heure dans une expérience pensée pour le mobile.</p><a class="button button-primary" href="${url('reservation/')}">Essayer le calendrier <span>→</span></a>${disclosure}</div><div class="calendar-preview" aria-hidden="true"><div class="preview-top"><span>Novembre 2026</span><span>← &nbsp; →</span></div><div class="preview-week"><small>L</small><small>M</small><small>M</small><small>J</small><small>V</small><small>S</small><small>D</small>${[2,3,4,5,6,7,8,9,10,11,12,13,14,15].map(n=>`<i class="${n===11?'selected':''}">${n}</i>`).join('')}</div><div class="preview-times"><span>09:00</span><span class="active">10:30</span><span>14:00</span></div></div></section>
+    <section class="reviews-section section-pad" aria-labelledby="reviews-title"><div class="section-label"><span>07</span><p>Expériences</p></div><div class="section-heading"><p class="eyebrow dark"><span></span> Les élèves</p><h2 id="reviews-title">Ce sont eux<br><em>qui en parlent.</em></h2><a class="text-link" href="${url('avis/')}">Lire tous les avis →</a></div><div class="quotes-grid">${testimonials.slice(0,4).map(quoteCard).join('')}</div></section>
+    <section class="locations-section section-pad"><div><p class="eyebrow dark"><span></span> Autour de L-GO</p><h2>Des élèves venus<br><em>d’ici.</em></h2><p>Ces lieux sont ceux indiqués dans les témoignages publiés sur le site actuel — pas une liste de zones desservies.</p></div><div class="location-cloud">${['Lausanne','Renens','Moudon','Prilly','Echallens','Belmont-sur-Lausanne'].map((l,i)=>`<span><small>0${i+1}</small>${l}</span>`).join('')}</div></section>
+    <section class="faq-section section-pad" aria-labelledby="faq-title"><div><p class="eyebrow dark"><span></span> Questions fréquentes</p><h2 id="faq-title">Avant de<br><em>commencer.</em></h2></div><div class="accordion">${[['La réservation est-elle réelle ?','Non. Ce site est une démonstration front-end et aucune demande n’est transmise.'],['Quels cours sont proposés ?','Conduite, moto, théorie, sensibilisation et premiers secours. L-GO publie également des conseils pour préparer le permis.'],['Puis-je choisir un moniteur ?','Oui, le calendrier de démonstration propose Lumrim, Gencer, Mustafa, Osman ou le premier disponible.'],['Quels tarifs sont affichés ?','Le site actuel publie quatre packs à CHF 300, CHF 450, CHF 720 et CHF 1’000, ainsi que plusieurs cours à l’unité.']].map(([q,a],i)=>`<details ${i===0?'open':''}><summary>${q}<span>+</span></summary><p>${a}</p></details>`).join('')}</div></section>
+    <section class="final-cta"><img src="${image('hero-lausanne.png')}" alt="" width="1536" height="1024" loading="lazy"><div><p>Le premier pas est simple.</p><h2>Prêt à prendre<br><em>la route ?</em></h2><a class="button button-primary" href="${url('reservation/')}">Réserver un cours <span>→</span></a></div></section>`;
+
+  function servicePage(service) {
+    const related = services.filter(s=>s.slug!==service.slug).slice(0,3);
+    return `<section class="page-hero"><img src="${image(service.image)}" alt="${esc(service.alt)}" width="1536" height="1024" fetchpriority="high"><div class="page-hero-overlay"></div><div class="page-hero-content"><nav class="breadcrumbs" aria-label="Fil d’Ariane"><a href="${base}">Accueil</a><span>/</span><span>${service.title}</span></nav><p class="eyebrow"><span></span>${service.eyebrow}</p><h1>${service.title.replace('Cours de ','Cours de<br>')}</h1><p>${service.summary}</p><a class="button button-primary" href="${url(`reservation/?service=${service.slug}`)}">Réserver ce cours <span>→</span></a></div></section>
+      <section class="service-intro section-pad"><div class="section-label"><span>01</span><p>${service.short}</p></div><div><p class="eyebrow dark"><span></span> Pour qui ?</p><h2>Construire les bons<br><em>réflexes.</em></h2></div><div class="service-copy"><p>${service.forWhom}</p><p>${service.detail}</p></div></section>
+      <section class="included-section section-pad dark-section"><div><p class="eyebrow"><span></span> Le contenu publié</p><h2>Ce que tu vas<br><em>travailler.</em></h2></div><ol>${service.includes.map((item,i)=>`<li><span>0${i+1}</span><h3>${item}</h3></li>`).join('')}</ol></section>
+      <section class="service-visual-break"><img src="${image(service.image)}" alt="${esc(service.alt)}" width="1536" height="1024" loading="lazy"><div><span>Progression</span><p>Comprendre.</p><p>Pratiquer.</p><p>Prendre confiance.</p></div></section>
+      <section class="service-form-section section-pad"><div><p class="eyebrow dark"><span></span> Prochaine étape</p><h2>Parlons de<br><em>ton objectif.</em></h2><p>Indique ce que tu recherches. La confirmation reste une simulation tant qu’aucun système de réservation réel n’est connecté.</p></div>${enquiryForm(service.title)}</section>
+      <section class="faq-section section-pad"><div><p class="eyebrow dark"><span></span> Bon à savoir</p><h2>Questions sur<br><em>${service.short.toLowerCase()}.</em></h2></div><div class="accordion">${service.faq.map(([q,a],i)=>`<details ${i===0?'open':''}><summary>${q}<span>+</span></summary><p>${a}</p></details>`).join('')}</div></section>
+      <section class="related-section section-pad"><p class="eyebrow dark"><span></span> Continuer le parcours</p><div class="related-grid">${related.map(s=>`<a href="${url(`${s.slug}/`)}"><span>${s.eyebrow}</span><strong>${s.title}</strong><i>↗</i></a>`).join('')}</div></section>`;
+  }
+
+  function enquiryForm(service='') { return `<form class="demo-form" data-demo-form><input type="hidden" name="service" value="${esc(service)}"><div class="form-row"><label>Prénom<input name="firstname" autocomplete="given-name" required></label><label>Téléphone<input name="phone" type="tel" autocomplete="tel" required></label></div><label>Email<input name="email" type="email" autocomplete="email" required></label><label>Ton message<textarea name="message" rows="4" placeholder="Dis-nous simplement ce dont tu as besoin"></textarea></label><button class="button button-primary" type="submit">Préparer ma demande <span>→</span></button>${disclosure}<div class="form-success" role="status" hidden><strong>Merci.</strong><p>Ta demande a bien été enregistrée pour cette démonstration. Aucun message réel n’a été envoyé.</p></div></form>`; }
+
+  const packsPage = `<section class="simple-hero"><nav class="breadcrumbs" aria-label="Fil d’Ariane"><a href="${base}">Accueil</a><span>/</span><span>Packs & tarifs</span></nav><p class="eyebrow"><span></span> Transparence</p><h1>Packs &<br><em>tarifs.</em></h1><p>Les prix et inclusions ci-dessous reprennent ceux publiés sur le site L-GO actuel.</p></section><section class="packs-page section-pad"><div class="packs-grid">${packs.map(packCard).join('')}</div></section><section class="unit-prices section-pad dark-section"><div><p class="eyebrow"><span></span> À l’unité</p><h2>Les autres<br><em>tarifs publiés.</em></h2></div><dl>${unitPrices.map(([n,p])=>`<div><dt>${n}</dt><dd>${p}</dd></div>`).join('')}</dl><p class="source-note">Tarifs observés dans le module de réservation du site actuel. À revalider par L-GO avant une mise en production commerciale.</p></section><section class="final-cta compact"><div><p>Une formule te parle ?</p><h2>Choisis-la dans<br><em>la démo.</em></h2><a class="button button-primary" href="${url('reservation/')}">Ouvrir le calendrier <span>→</span></a></div></section>`;
+
+  const instructorsPage = `<section class="simple-hero team-hero"><nav class="breadcrumbs" aria-label="Fil d’Ariane"><a href="${base}">Accueil</a><span>/</span><span>Moniteurs</span></nav><p class="eyebrow"><span></span> La team</p><h1>Choisis<br><em>ton prof.</em></h1><p>Quatre approches, plusieurs langues, un accompagnement orienté confiance.</p></section><section class="team-page section-pad"><div class="instructor-grid large">${instructors.map(instructorCard).join('')}</div><p class="source-note">Les portraits, biographies, langues et numéros sont repris du site L-GO actuel. La même photo y est associée à Lumrim et Osman ; un portrait distinct d’Osman reste à fournir.</p></section><section class="final-cta compact"><div><p>Un moniteur en tête ?</p><h2>Réserve ton<br><em>prochain cours.</em></h2><a class="button button-primary" href="${url('reservation/')}">Choisir un moniteur <span>→</span></a></div></section>`;
+
+  const reviewsPage = `<section class="simple-hero"><nav class="breadcrumbs" aria-label="Fil d’Ariane"><a href="${base}">Accueil</a><span>/</span><span>Avis</span></nav><p class="eyebrow"><span></span> Expériences publiées</p><h1>Leurs mots.<br><em>Leur parcours.</em></h1><p>Les huit témoignages actuellement présents sur le site L-GO, sans note ni statistique ajoutée.</p></section><section class="reviews-page section-pad"><div class="quotes-grid all">${testimonials.map(quoteCard).join('')}</div></section>`;
+
+  const aboutPage = `<section class="page-hero about-hero"><img src="${image('driving-lesson.png')}" alt="Élève accompagnée pendant une leçon de conduite" width="1536" height="1024"><div class="page-hero-overlay"></div><div class="page-hero-content"><nav class="breadcrumbs" aria-label="Fil d’Ariane"><a href="${base}">Accueil</a><span>/</span><span>À propos</span></nav><p class="eyebrow"><span></span> L-GO</p><h1>Réussis<br><em>ton permis.</em></h1><p>Former la nouvelle génération de conducteurs.</p></div></section><section class="manifesto section-pad"><div class="section-label"><span>01</span><p>Notre approche</p></div><h2>Comprendre.<br>Pratiquer.<br><em>Prendre confiance.</em></h2><div><p>L-GO rassemble plusieurs formations autour d’un objectif simple : t’accompagner dans ta progression vers le permis.</p><p>Les moniteurs présentent des approches fondées sur l’écoute, la pédagogie, l’anticipation et la confiance.</p></div></section><section class="values-row"><span>Réussite</span><span>Sécurité</span><span>Vigilance</span></section><section class="final-cta compact"><div><p>Découvre une approche qui te ressemble.</p><h2>On commence<br><em>quand ?</em></h2><a class="button button-primary" href="${url('reservation/')}">Réserver un cours <span>→</span></a></div></section>`;
+
+  const contactPage = `<section class="simple-hero"><nav class="breadcrumbs" aria-label="Fil d’Ariane"><a href="${base}">Accueil</a><span>/</span><span>Contact</span></nav><p class="eyebrow"><span></span> Une question ?</p><h1>Parlons de<br><em>ton permis.</em></h1><p>Contacte L-GO par téléphone, Instagram ou prépare un message dans ce formulaire de démonstration.</p></section><section class="contact-section section-pad"><div class="contact-details"><div><small>Téléphone</small><a href="tel:+41799136399">079 913 63 99 ↗</a></div><div><small>Instagram</small><a href="https://www.instagram.com/l_go_ch/" target="_blank" rel="noopener">@l_go_ch ↗</a></div><p>Aucune adresse ni adresse e-mail n’est publiée ici, car ces informations n’ont pas été vérifiées sur le site source.</p></div>${enquiryForm('Contact général')}</section>`;
+
+  const bookingPage = `<section class="booking-page"><div class="booking-aside"><a href="${base}" class="booking-logo"><img src="${image('l-go-logo.png')}" alt="L-GO" width="1600" height="824"></a><div><p class="eyebrow"><span></span> Réservation démo</p><h1>À toi de<br><em>choisir.</em></h1><p>Une expérience complète, sans transmission réelle.</p></div><a href="${base}" class="back-home">← Retour au site</a></div><main class="booking-main" id="contenu"><div class="booking-top"><div><small>Étape <span data-step-number>1</span> sur 6</small><div class="progress-track"><span data-progress></span></div></div><p>Calendrier de démonstration – aucune réservation réelle n’est transmise.</p></div>${bookingWizard()}</main></section>`;
+
+  function bookingWizard() { return `<form class="booking-wizard" data-booking-wizard novalidate>
+    <section class="booking-step is-active" data-step="1"><p class="eyebrow dark"><span></span> 01 · Service</p><h2>Que veux-tu réserver ?</h2><div class="choice-grid service-choices">${services.map(s=>`<label><input type="radio" name="booking-service" value="${s.slug}" required><span><small>${s.eyebrow}</small><strong>${s.title}</strong><i>→</i></span></label>`).join('')}</div></section>
+    <section class="booking-step" data-step="2"><p class="eyebrow dark"><span></span> 02 · Moniteur</p><h2>Avec qui veux-tu avancer ?</h2><p class="step-hint">Cette étape est proposée pour la conduite et la moto. Pour les cours collectifs, elle sera ignorée.</p><div class="choice-grid instructor-choices"><label><input type="radio" name="booking-instructor" value="Premier disponible"><span class="available-first"><small>Le plus simple</small><strong>Premier disponible</strong><i>→</i></span></label>${instructors.map(p=>`<label><input type="radio" name="booking-instructor" value="${p.name}"><span><img src="${image(p.image)}" alt="" width="72" height="72"><small>${p.languages}</small><strong>${p.name}</strong><i>→</i></span></label>`).join('')}</div></section>
+    <section class="booking-step" data-step="3"><p class="eyebrow dark"><span></span> 03 · Date</p><h2>Quel jour te convient ?</h2><div class="calendar" data-calendar><div class="calendar-head"><button type="button" data-month-prev aria-label="Mois précédent">←</button><strong data-month-label></strong><button type="button" data-month-next aria-label="Mois suivant">→</button></div><div class="calendar-grid" data-calendar-grid></div></div></section>
+    <section class="booking-step" data-step="4"><p class="eyebrow dark"><span></span> 04 · Heure</p><h2>À quel moment ?</h2><p class="step-hint">Créneaux fictifs pour la démonstration.</p><div class="time-grid">${['08:00','09:30','11:00','13:30','15:00','16:30','18:00'].map(t=>`<label><input type="radio" name="booking-time" value="${t}" required><span>${t}</span></label>`).join('')}</div></section>
+    <section class="booking-step" data-step="5"><p class="eyebrow dark"><span></span> 05 · Tes coordonnées</p><h2>Comment te joindre ?</h2><div class="details-form"><div class="form-row"><label>Prénom<input name="firstname" autocomplete="given-name" required></label><label>Nom<input name="lastname" autocomplete="family-name" required></label></div><div class="form-row"><label>Téléphone<input name="phone" type="tel" autocomplete="tel" required></label><label>Email<input name="email" type="email" autocomplete="email" required></label></div><label>Message / remarque <span>(facultatif)</span><textarea name="message" rows="4"></textarea></label></div></section>
+    <section class="booking-step" data-step="6"><p class="eyebrow dark"><span></span> 06 · Vérification</p><h2>Tout est juste ?</h2><dl class="booking-review" data-booking-review></dl><div class="demo-alert"><strong>Réservation de démonstration</strong><p>Aucune disponibilité réelle n’est consultée et aucune demande ne sera transmise.</p></div></section>
+    <section class="booking-step booking-confirmation" data-step="7"><span class="confirm-mark">✓</span><p class="eyebrow dark"><span></span> Démonstration terminée</p><h2>Ta demande de réservation a bien été enregistrée pour cette démonstration.</h2><p>Aucune réservation réelle n’a été transmise à L-GO.</p><div><a class="button button-primary" href="${base}">Retour à l’accueil <span>→</span></a><button type="button" class="button button-dark" data-booking-reset>Recommencer</button></div></section>
+    <p class="booking-error" role="alert" data-booking-error></p><div class="booking-controls" data-booking-controls><button type="button" class="button button-dark" data-booking-back>Retour</button><button type="button" class="button button-primary" data-booking-next>Continuer <span>→</span></button></div>
+  </form>`; }
+
+  const pageMap = {
+    '': { title:'L-GO | Réussis ton permis', description:'Cours de conduite, moto, théorie, sensibilisation et premiers secours avec L-GO.', body:homepage, nav:'' },
+    'packs-tarifs': { title:'Packs & tarifs | L-GO', description:'Découvre les packs et tarifs actuellement publiés par L-GO.', body:packsPage, nav:'packs' },
+    'moniteurs': { title:'Les moniteurs | L-GO', description:'Découvre Lumrim, Gencer, Mustafa et Osman, les moniteurs présentés par L-GO.', body:instructorsPage, nav:'moniteurs' },
+    'avis': { title:'Avis des élèves | L-GO', description:'Lis les témoignages d’élèves actuellement publiés par L-GO.', body:reviewsPage, nav:'avis' },
+    'a-propos': { title:'À propos | L-GO', description:'Découvre l’approche L-GO pour progresser vers le permis avec confiance.', body:aboutPage, nav:'a-propos' },
+    'reservation': { title:'Réservation démo | L-GO', description:'Essaie le calendrier de réservation de démonstration L-GO.', body:bookingPage, bare:true },
+    'contact': { title:'Contact | L-GO', description:'Contacte L-GO ou prépare une demande grâce au formulaire de démonstration.', body:contactPage, nav:'' },
+  };
+  for (const service of services) pageMap[service.slug] = { title:`${service.title} | L-GO`, description:service.summary, body:servicePage(service), nav:'cours', service };
+
+  function schema(slug, page) {
+    const items = [{ '@type':'ListItem', position:1, name:'Accueil', item:'https://welcometothenextlevel.github.io/l-go/' }];
+    if (slug) items.push({ '@type':'ListItem', position:2, name:page.service?.title || page.title.split(' | ')[0], item:`https://welcometothenextlevel.github.io/l-go/${slug}/` });
+    const data = [{ '@context':'https://schema.org', '@type':'Organization', name:'L-GO', url:'https://welcometothenextlevel.github.io/l-go/', telephone:'+41799136399', sameAs:['https://www.instagram.com/l_go_ch/'] },{ '@context':'https://schema.org', '@type':'BreadcrumbList', itemListElement:items }];
+    if (page.service) data.push({ '@context':'https://schema.org', '@type':'Service', name:page.service.title, description:page.service.summary, provider:{ '@type':'Organization', name:'L-GO' } });
+    return JSON.stringify(data);
+  }
+
+  function document(slug, page) {
+    const canonical = `https://welcometothenextlevel.github.io/l-go/${slug?`${slug}/`:''}`;
+    return `<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#07090d"><title>${esc(page.title)}</title><meta name="description" content="${esc(page.description)}"><link rel="canonical" href="${canonical}"><meta property="og:type" content="website"><meta property="og:site_name" content="L-GO"><meta property="og:title" content="${esc(page.title)}"><meta property="og:description" content="${esc(page.description)}"><meta property="og:url" content="${canonical}"><meta property="og:image" content="https://welcometothenextlevel.github.io/l-go/og.png"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="${esc(page.title)}"><meta name="twitter:description" content="${esc(page.description)}"><meta name="twitter:image" content="https://welcometothenextlevel.github.io/l-go/og.png"><link rel="icon" href="${image('l-go-logo.png')}" type="image/png"><link rel="stylesheet" href="${url('styles.css')}"><script type="application/ld+json">${schema(slug,page)}</script></head><body data-base="${base}" data-page="${slug}">${page.bare?'':header}<main id="contenu">${page.body}</main>${page.bare?'':`${footer}${chat}${mobileBar}`}<script src="${url('site.js')}" defer></script></body></html>`;
+  }
+
+  return { pageMap, document, url };
+}

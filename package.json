@@ -1,0 +1,16 @@
+{
+  "name": "l-go-driving-school",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "dev": "node scripts/dev.mjs",
+    "build": "node scripts/build.mjs",
+    "start": "node scripts/dev.mjs",
+    "lint": "node --check scripts/build.mjs && node --check scripts/dev.mjs && node --check src/data.mjs && node --check src/templates.mjs && node --check src/site.js",
+    "test": "node scripts/check-site.mjs"
+  }
+}
