@@ -26,4 +26,6 @@ const notFoundBody = `<main id="contenu"><section class="not-found"><p class="ey
 const notFound = document('', pageMap['']).replace(/<main id="contenu">[\s\S]*?<\/main>/, notFoundBody).replace('<title>L-GO | Réussis ton permis</title>','<title>Page introuvable | L-GO</title>');
 await writeFile(path.join(out, '404.html'), notFound);
 await writeFile(path.join(out, '.nojekyll'), '');
+await mkdir(path.join(out, 'server'), { recursive:true });
+await writeFile(path.join(out, 'server', 'index.js'), `export default { fetch(request, env) { return env.ASSETS.fetch(request); } };\n`);
 console.log(`Built ${Object.keys(pageMap).length} L-GO pages in ${out}`);
